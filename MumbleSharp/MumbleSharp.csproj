@@ -2,23 +2,23 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
-    <Version>2.0.1</Version>
+    <Version>2.0.2-seqfix</Version>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>MumbleSharp is a mumble protocol implementation in C#.
+    <Description>MumbleSharp is a mumble protocol implementation in C#. Fork with voice sequence number fix.
 For more info on Mumble please visit https://www.mumble.info/</Description>
     <Copyright>Copyright © 2023</Copyright>
-    <PackageProjectUrl>https://github.com/martindevans/MumbleSharp</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/N6UDP/MumbleSharp</PackageProjectUrl>
     <ApplicationIcon>mumblesharp.ico</ApplicationIcon>
-    <RepositoryUrl>https://github.com/martindevans/MumbleSharp</RepositoryUrl>
+    <RepositoryUrl>https://github.com/N6UDP/MumbleSharp</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Mumble voip voice chat</PackageTags>
-    <Authors>martindevans, Meetsch</Authors>
+    <Authors>martindevans, Meetsch, N6UDP</Authors>
     <Company />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>mumblesharp.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageReleaseNotes>fix inclusion of opus.dll in projects referencing this package.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix voice sequence number: advance by frame count instead of always 1.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
