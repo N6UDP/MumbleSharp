@@ -94,11 +94,13 @@ namespace MumbleSharp.Audio
                 var frameBytes = codecInstance.PermittedEncodingFrameSizes.Select(f => f * sizeof(ushort)).Where(f => f >= _pcmBuffer.Count).Min();
                 byte[] b = new byte[frameBytes];
                 int read = _pcmBuffer.Read(new ArraySegment<byte>(b));
+                int samples = frameBytes / sizeof(ushort);
 
                 return new EncodedTargettedSpeech(
                     codecInstance.Encode(new ArraySegment<byte>(b, 0, read)),
                     _target,
-                    _targetId);
+                    _targetId,
+                    samples);
             }
             else
             {
@@ -109,11 +111,13 @@ namespace MumbleSharp.Audio
                     var frameBytes = frameBytesList.Max();
                     byte[] b = new byte[frameBytes];
                     int read = _pcmBuffer.Read(new ArraySegment<byte>(b));
+                    int samples = read / sizeof(ushort);
 
                     return new EncodedTargettedSpeech(
                         codecInstance.Encode(new ArraySegment<byte>(b, 0, read)),
                         _target,
-                        _targetId);
+                        _targetId,
+                        samples);
                 }
                 else return null;
             }
@@ -144,12 +148,19 @@ namespace MumbleSharp.Audio
             public readonly byte[] EncodedPcm;
             public readonly SpeechTarget Target;
             public readonly uint TargetId;
+            /// <summary>
+            /// The number of PCM samples that were encoded into this packet.
+            /// Used to compute the correct Mumble sequence number increment
+            /// (sequence advances by number of 10ms audio frames per packet).
+            /// </summary>
+            public readonly int PcmSamples;
 
-            public EncodedTargettedSpeech(byte[] encodedPcm, SpeechTarget target, uint targetId)
+            public EncodedTargettedSpeech(byte[] encodedPcm, SpeechTarget target, uint targetId, int pcmSamples)
             {
                 TargetId = targetId;
                 Target = target;
                 EncodedPcm = encodedPcm;
+                PcmSamples = pcmSamples;
             }
         }
 

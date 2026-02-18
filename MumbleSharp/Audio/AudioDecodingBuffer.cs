@@ -180,13 +180,13 @@ namespace MumbleSharp.Audio
             if (!packet.HasValue)
                 return false;
 
-            ////todo: _nextSequenceToDecode calculation is wrong, which causes this to happen for almost every packet!
-            ////Decode a null to indicate a dropped packet
-            //if (packet.Value.Sequence != _nextSequenceToDecode)
-            //    _codec.Decode(null);
-
             var d = _codec.Decode(packet.Value.Data);
-            _nextSequenceToDecode = packet.Value.Sequence + d.Length / (_sampleRate / _frameSize);
+            // Sequence advances by number of 10ms audio frames in the decoded data.
+            // d.Length is in bytes (16-bit samples = 2 bytes each), so samples = d.Length / 2.
+            // At 48kHz: 480 samples = 10ms.
+            int samplesPerTenMs = _sampleRate / 100;
+            int decodedSamples = d.Length / sizeof(ushort);
+            _nextSequenceToDecode = packet.Value.Sequence + Math.Max(decodedSamples / samplesPerTenMs, 1);
 
             Array.Copy(d, 0, _decodedBuffer, _decodedOffset, d.Length);
             _decodedCount += d.Length;

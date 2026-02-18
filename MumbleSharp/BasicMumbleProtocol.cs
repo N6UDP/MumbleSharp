@@ -647,9 +647,15 @@ namespace MumbleSharp
 
                             Connection?.SendVoice(new ArraySegment<byte>(packedData));
 
-                            sequenceIndex++;
                             currentOffset += currentBlockSize;
                         }
+
+                        // Sequence number must advance by the number of 10ms audio frames
+                        // in the encoded packet (e.g. 20ms = 2, 60ms = 6), not just 1.
+                        // At 48kHz: 480 samples = 10ms.
+                        int samplesPerTenMs = Constants.DEFAULT_AUDIO_SAMPLE_RATE / 100;
+                        int numFrames = encodedTargettedSpeech.Value.PcmSamples / samplesPerTenMs;
+                        sequenceIndex += (uint)Math.Max(numFrames, 1);
                     }
                     else
                     {
